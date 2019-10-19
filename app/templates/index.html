@@ -1,8 +1,13 @@
 <html>
   <head>
-    <title>{{ title }} - Bookmarks</title>
+    <title>{{ title }}'s Bookmarks</title>
   </head>
   <body>
-    <h1>Hello, {{ user.username }}!</h1>
+    <h1>{{ user.username }}'s Bookmarks</h1>
+    {% for bookmark in bookmarks %}
+    <div class="bookmark">
+      <p><a href="{{bookmark.url}}">{{bookmark.title}}</a> {{bookmark.description}}</p>
+    </div>
+    {% endfor %}
   </body>
 </html>

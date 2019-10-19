@@ -9,8 +9,7 @@ store = BookmarkStore()
 @app.route('/index')
 def index():
     user = {'username': 'boonspoj'}
-    store.add_bookmark(url="http://google.com", title="An evil search engine", description="Just stuff")
-    return render_template('index.html', title='August', user=user)
+    return render_template('index.html', title='August', user=user, bookmarks=store.get_bookmarks())
 
 @app.route('/bookmarks')
 def get_bookmarks():
