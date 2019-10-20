@@ -1,9 +1,11 @@
 #TODO
 - store bookmarks to filesystem [x]
 - display list of bookmarks on / [x]
-- add bookmark form []
-    - add bookmark endpoint [x]
+- add bookmark form [x]
+    - form submit accept data [x]
+    - base template for all pages [x]
 - delete bookmark from store []
     - requires an ID as part of the bookmark data [x]
     - delete endpoint []
+- add bookmark endpoint [x]
 - login to be able to modify content []

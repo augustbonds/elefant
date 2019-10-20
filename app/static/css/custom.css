@@ -1,0 +1,14 @@
+ul.navbar-list {
+  padding-inline-start: 20px;
+}
+
+li.navbar-item {
+  list-style: none;
+  float: left;
+  margin-right: 3em;
+  font-size: 1.5em;
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #222;
+}
