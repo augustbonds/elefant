@@ -9,3 +9,11 @@
     - delete endpoint []
 - add bookmark endpoint [x]
 - login to be able to modify content []
+- add support for tags []
+  - add tags to form input []
+  - add tags to store []
+  - add tags to homepage []
+- search support []
+  - able to search by title, description, url []
+  - able to search by tags []
+  
