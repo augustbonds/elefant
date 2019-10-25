@@ -12,3 +12,21 @@ li.navbar-item {
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #222;
 }
+
+div.bookmark {
+  margin-bottom: 10px;
+}
+
+div.bookmark div.bookmark-header {
+
+}
+
+div.bookmark div.bookmark-description p {
+  margin-bottom: 0.2em;
+}
+
+div.bookmark div.bookmark-timestamp {
+  font-size:x-small;
+  color: gray;
+}
+

@@ -5,8 +5,19 @@
 <div class="container">
   {% for bookmark in bookmarks %}
   <div class="bookmark">
-    <p><a href="{{bookmark.url}}">{{bookmark.title}}</a> {{bookmark.description}}</p>
+    <div class="bookmark-header">
+      <a href="{{bookmark.url}}">{{bookmark.title}}</a>
+    </div>
+    <div class="bookmark-description">
+      <p>{{bookmark.description}}</p>
+    </div>
+    <div class="bookmark-timestamp">
+      <p>{{bookmark.date_added}}</p>
+    </div>
   </div>
   {% endfor %}
+<div class="bookmark-pagination">
+  <a href="/?offset={{prev_offset}}&limit={{limit}}">prev</a>Page {{page_num}}<a href="/?offset={{next_offset}}&limit={{limit}}">next</a>
+</div>
 </div>
 {% endblock %}
