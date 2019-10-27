@@ -20,10 +20,10 @@ def index():
     logger.info(f"index(): tags = {tags} offset = {offset} limit = {limit} prev_offset = {prev_offset} next_offset={next_offset}")
     if tags:
         logger.info(f"tags specified: {tags}") 
-        return render_template('index.html', user=user, bookmarks=store.get_posts_by_tags(tags, offset, limit))
+        return render_template('index.html', tags=",".join(tags), user=user, bookmarks=store.get_posts_by_tags(tags, offset, limit), page_num=offset+1, prev_offset=prev_offset, next_offset=next_offset,limit=limit)
     else:
         logger.info(f"no tags specified")
-        return render_template('index.html', user=user, bookmarks=store.get_posts(offset,limit), page_num=offset+1, prev_offset=prev_offset, next_offset=next_offset)
+        return render_template('index.html', user=user, bookmarks=store.get_posts(offset,limit), page_num=offset+1, prev_offset=prev_offset, next_offset=next_offset,limit=limit)
 
 @app.route('/bookmarks/new', methods=['GET', 'POST'])
 def create_new_bookmark():
