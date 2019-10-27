@@ -9,11 +9,18 @@
     - delete endpoint []
 - add bookmark endpoint [x]
 - login to be able to modify content []
-- add support for tags []
-  - add tags to form input []
-  - add tags to store []
+- support for private posts []
+- add support for tags [x]
+  - add tags to form input [x]
+  - add tags to store [x]
   - add tags to homepage []
 - search support []
+  - search bar []
   - able to search by title, description, url []
-  - able to search by tags []
+  - able to search by tags [x] //only in params atm
+- store to db []
   
+  
+#Bonus
+- RSS export
+- ActivityPub interface
