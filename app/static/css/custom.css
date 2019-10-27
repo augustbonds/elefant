@@ -14,19 +14,32 @@ li.navbar-item {
 }
 
 div.bookmark {
-  margin-bottom: 10px;
-}
-
-div.bookmark div.bookmark-header {
-
+  
 }
 
 div.bookmark div.bookmark-description p {
+  font-size:1em;
   margin-bottom: 0.2em;
 }
-
 div.bookmark div.bookmark-timestamp {
-  font-size:x-small;
-  color: gray;
+    font-size:x-small;
+    color: gray;
 }
+@media (min-width: 750px) {
+  div.bookmark {
+    margin-bottom: 1em;
+  }
 
+  div.bookmark div.bookmark-header {
+
+  }
+
+  div.bookmark div.bookmark-description p {
+    margin-bottom: 0.2em;
+  }
+
+  div.bookmark div.bookmark-timestamp {
+    font-size:x-small;
+    color: gray;
+  }
+}
