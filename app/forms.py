@@ -6,4 +6,5 @@ class NewBookmarkForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     url = StringField('Url', validators=[DataRequired()])
     description = TextAreaField('Description')
+    tags = StringField('Tags')
     submit = SubmitField('Create')
