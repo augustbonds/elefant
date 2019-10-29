@@ -40,19 +40,20 @@ class FileStore(AbstractStore):
         return sorted(posts, key=lambda post: defaultdict(lambda: '', post)["date_added"], reverse=True)
     
     def search_posts(self, query, offset, limit):
+        query = query.lower()
         posts = self.get_all_posts()
         last_index = offset*limit + limit
         result = []
         for post in posts:
             if (len(result) == last_index - 1):
                 break
-            if (query in post["title"]):
+            if (query in post["title"].lower()):
                 result.append(post)
-            if (query in post["url"]):
+            elif (query in post["url"].lower()):
                 result.append(post)
-            if (query in ''.join(post.get("tags", []))):
+            elif (query in ''.join(post.get("tags", [])).lower()):
                 result.append(post)
-            if (query in post.get("description", "")):
+            elif (query in post.get("description", "").lower()):
                 result.append(post)
         return self.posts_sorted_by_time(result)[offset*limit:]
     
