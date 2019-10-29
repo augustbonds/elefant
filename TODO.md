@@ -14,10 +14,12 @@
   - add tags to form input [x]
   - add tags to store [x]
   - add tags to homepage []
+  - make tags clickable (direct to tag search) []
+    - display currently selected tag []
 - search support []
-  - search bar []
-  - able to search by title, description, url []
-  - able to search by tags [x] //only in params atm
+  - search bar [x]
+  - able to search by title, description, url, plain tag name [x]
+  - search by tag (#bla) []
 - store to db []
   
   
