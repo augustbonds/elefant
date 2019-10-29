@@ -14,3 +14,7 @@ class AbstractStore(ABC):
     def add_post(self, post):
         pass
 
+    @abstractmethod
+    def search_posts(self, query, offset, limit):
+        pass
+

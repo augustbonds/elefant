@@ -18,7 +18,11 @@ def index():
     prev_offset = offset if offset == 0 else offset - 1
     next_offset = offset + 1
     logger.info(f"index(): tags = {tags} offset = {offset} limit = {limit} prev_offset = {prev_offset} next_offset={next_offset}")
-    if tags:
+    search_query = request.args.get("q", default='', type = str)
+    if (search_query):
+        logger.info(f"search query specififed: {search_query}")
+        return render_template('index.html', search_query=search_query, user=user, bookmarks=store.search_posts(search_query, offset, limit), page_num=offset+1, prev_offset=prev_offset, next_offset=next_offset,limit=limit)
+    elif tags:
         logger.info(f"tags specified: {tags}") 
         return render_template('index.html', tags=",".join(tags), user=user, bookmarks=store.get_posts_by_tags(tags, offset, limit), page_num=offset+1, prev_offset=prev_offset, next_offset=next_offset,limit=limit)
     else:
@@ -28,13 +32,7 @@ def index():
 @app.route('/bookmarks/new', methods=['GET', 'POST'])
 def create_new_bookmark():
     if request.method == 'POST':
-        post = {}
-        post["url"] = request.form['url']
-        post["title"] = request.form['title']
-        post["description"] = request.form['description']
-        tags = request.form.get('tags', default='')
-        tags = [tag.strip() for tag in tags.split(',')]
-        post["tags"] = tags
+        post = post_from_form(request.form)
         store.add_post(post)
         return redirect('/')
     else:
@@ -44,15 +42,24 @@ def create_new_bookmark():
 
 @app.route('/bookmarks', methods=['GET'])
 def get_bookmarks():
-    bookmarks = store.get_bookmarks()
-    return jsonify(bookmarks)
+    search_query = request.args["q"]
+    if (search_query):
+        return jsonify(store.search_posts(query=search_query, offset=request.args["offset"], limit=request.args["limit"]))
+    else:
+        return jsonify(store.get_all_posts())
 
 @app.route('/bookmarks', methods=['POST'])
 def add_bookmark():
-    url = request.form['url']
-    title = request.form['title']
-    description = request.form['description']
+    post = post_from_form(request.form)
+    store.add_post(post)
+    return redirect('/')
+
+def post_from_form(form):
+    post = {}
+    post["url"] = request.form['url']
+    post["title"] = request.form['title']
+    post["description"] = request.form['description']
     tags = request.form.get('tags', default='')
     tags = [tag.strip() for tag in tags.split(',')]
-    store.add_bookmark(url=url, title=title, description=description, tags=tags)
-    return redirect('/')
+    post["tags"] = tags
+    return post

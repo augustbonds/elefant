@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <div class="container">
+  <div class="search-container">
+    <form>
+      <input type="search" placeholder="Search.." name="q" value="{{search_query}}"></input>
+      <button type="submit">Search</button>
+    </form>
+  </div>
   {% for bookmark in bookmarks %}
   <div class="bookmark">
     <div class="bookmark-header">

@@ -38,6 +38,26 @@ class FileStore(AbstractStore):
 
     def posts_sorted_by_time(self, posts):
         return sorted(posts, key=lambda post: defaultdict(lambda: '', post)["date_added"], reverse=True)
+    
+    def search_posts(self, query, offset, limit):
+        posts = self.get_all_posts()
+        last_index = offset*limit + limit
+        result = []
+        for post in posts:
+            if (len(result) == last_index - 1):
+                break
+            if (query in post["title"]):
+                result.append(post)
+            if (query in post["url"]):
+                result.append(post)
+            if (query in ''.join(post.get("tags", []))):
+                result.append(post)
+            if (query in post.get("description", "")):
+                result.append(post)
+        return self.posts_sorted_by_time(result)[offset*limit:]
+    
+    def get_all_posts(self):
+        return self.read_db_file()["bookmarks"]
 
     def next_id(self, store):
         next = store["next_id"]
