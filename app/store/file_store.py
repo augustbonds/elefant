@@ -38,7 +38,7 @@ class FileStore(AbstractStore):
 
     def posts_sorted_by_time(self, posts):
         return sorted(posts, key=lambda post: defaultdict(lambda: '', post)["date_added"], reverse=True)
-    
+
     def search_posts(self, query, offset, limit):
         query = query.lower()
         posts = self.get_all_posts()
@@ -56,7 +56,7 @@ class FileStore(AbstractStore):
             elif (query in post.get("description", "").lower()):
                 result.append(post)
         return self.posts_sorted_by_time(result)[offset*limit:]
-    
+
     def get_all_posts(self):
         return self.read_db_file()["bookmarks"]
 
@@ -83,6 +83,6 @@ class FileStore(AbstractStore):
                 store = json.load(db)
                 return store
         except IOError:
-            logger.info("Db file didn't exist. Will be created by next add operation.")
+            logger.info("Db file: " + self.db_path +  " didn't exist. Will be created by next add operation.")
             return {"next_id": 1, "bookmarks": []}
 
