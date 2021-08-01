@@ -63,3 +63,4 @@ def post_from_form(form):
     tags = [tag.strip() for tag in tags.split(',')]
     post["tags"] = tags
     return post
+
