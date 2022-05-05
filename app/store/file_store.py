@@ -75,7 +75,7 @@ class FileStore(AbstractStore):
 
     def write_db_file(self,store):
         with open(self.db_path, 'w') as db:
-            json.dump(store, db)
+            json.dump(store, db, indent=4)
 
     def read_db_file(self):
         try:
