@@ -72,15 +72,15 @@ class FileStore(AbstractStore):
         last_index = offset * limit + limit
         result = []
         for post in posts:
-            if (len(result) == last_index - 1):
+            if len(result) == last_index - 1:
                 break
-            if (query in post["title"].lower()):
+            if query in post["title"].lower():
                 result.append(post)
-            elif (query in post["url"].lower()):
+            elif query in post["url"].lower():
                 result.append(post)
-            elif (query in ''.join(post.get("tags", [])).lower()):
+            elif query in ''.join(post.get("tags", [])).lower():
                 result.append(post)
-            elif (query in post.get("description", "").lower()):
+            elif query in post.get("description", "").lower():
                 result.append(post)
         return posts_sorted_by_time(result)[offset * limit:]
 
