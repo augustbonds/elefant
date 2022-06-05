@@ -25,8 +25,8 @@ def index():
     logger.info(
         f"index(): tags = {tags} offset = {offset} limit = {limit} prev_offset = {prev_offset} next_offset={next_offset}")
     search_query = request.args.get("q", default='', type=str)
-    if (search_query):
-        logger.info(f"search query specififed: {search_query}")
+    if search_query:
+        logger.info(f"search query specified: {search_query}")
         return render_template('index.html', search_query=search_query, user=user,
                                bookmarks=store.search_posts(search_query, offset, limit), page_num=offset + 1,
                                prev_offset=prev_offset, next_offset=next_offset, limit=limit)
@@ -56,7 +56,7 @@ def create_new_bookmark():
 @app.route('/bookmarks', methods=['GET'])
 def get_bookmarks():
     search_query = request.args["q"]
-    if (search_query):
+    if search_query:
         return jsonify(
             store.search_posts(query=search_query, offset=request.args["offset"], limit=request.args["limit"]))
     else:
