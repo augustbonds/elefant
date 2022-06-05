@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class AbstractStore(ABC):
 
     @abstractmethod
@@ -17,4 +18,3 @@ class AbstractStore(ABC):
     @abstractmethod
     def search_posts(self, query, offset, limit):
         pass
-

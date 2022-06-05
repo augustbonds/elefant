@@ -5,4 +5,5 @@ app.config['SECRET_KEY'] = 'you-will-never-guess'
 
 from app import routes
 import logging
+
 logging.basicConfig(filename='elefant.log', level=logging.DEBUG)

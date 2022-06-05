@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class FileStore(AbstractStore):
 
     def __init__(self):
@@ -18,15 +19,15 @@ class FileStore(AbstractStore):
         db = self.read_db_file()
         posts = db["bookmarks"]
         sorted_by_time = self.posts_sorted_by_time(posts)
-        return sorted_by_time[offset*limit:offset*limit+limit]
+        return sorted_by_time[offset * limit:offset * limit + limit]
 
     def get_posts_by_tags(self, tags=[], offset=0, limit=10):
         logger.debug(f"get_posts_by_tags: tags={tags} o={offset} l={limit} ")
         db = self.read_db_file()
         posts = db["bookmarks"]
-        by_tags = [post for post in posts if set(post.get("tags",[])).intersection(set(tags))]
+        by_tags = [post for post in posts if set(post.get("tags", [])).intersection(set(tags))]
         sorted_by_time = self.posts_sorted_by_time(by_tags)
-        return sorted_by_time[offset*limit:offset*limit+limit]
+        return sorted_by_time[offset * limit:offset * limit + limit]
 
     def add_post(self, post):
         store = self.read_db_file()
@@ -42,7 +43,7 @@ class FileStore(AbstractStore):
     def search_posts(self, query, offset, limit):
         query = query.lower()
         posts = self.get_all_posts()
-        last_index = offset*limit + limit
+        last_index = offset * limit + limit
         result = []
         for post in posts:
             if (len(result) == last_index - 1):
@@ -55,7 +56,7 @@ class FileStore(AbstractStore):
                 result.append(post)
             elif (query in post.get("description", "").lower()):
                 result.append(post)
-        return self.posts_sorted_by_time(result)[offset*limit:]
+        return self.posts_sorted_by_time(result)[offset * limit:]
 
     def get_all_posts(self):
         return self.read_db_file()["bookmarks"]
@@ -71,9 +72,9 @@ class FileStore(AbstractStore):
         try:
             self.db_path = config['store']['DbPath']
         except KeyError:
-           raise SystemExit("Couldn't find DbPath in app.conf, exiting")
+            raise SystemExit("Couldn't find DbPath in app.conf, exiting")
 
-    def write_db_file(self,store):
+    def write_db_file(self, store):
         with open(self.db_path, 'w') as db:
             json.dump(store, db, indent=4)
 
@@ -83,6 +84,5 @@ class FileStore(AbstractStore):
                 store = json.load(db)
                 return store
         except IOError:
-            logger.info("Db file: " + self.db_path +  " didn't exist. Will be created by next add operation.")
+            logger.info("Db file: " + self.db_path + " didn't exist. Will be created by next add operation.")
             return {"next_id": 1, "bookmarks": []}
-
