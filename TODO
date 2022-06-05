@@ -1,0 +1,28 @@
+Todo:
+    ✔ store bookmarks to filesystem @done(22-06-05 11:57)
+    ✔ display list of bookmarks on / @done(22-06-05 11:57)
+    ✔ add bookmark form  @done(22-06-05 11:58)
+        ✔ form submit accept data  @done(22-06-05 11:58)
+        ✔ base template for all pages  @done(22-06-05 11:58)
+    ☐ delete bookmark from store 
+        ✔ requires an ID as part of the bookmark data @done(22-06-05 11:59)
+        ☐ delete endpoint 
+    ✔ add bookmark endpoint  @done(22-06-05 11:58)
+    ✔ login to be able to modify content  @done(22-06-05 11:58)
+    ☐ support for private posts 
+    ✔ add support for tags  @done(22-06-05 11:58)
+      ✔ add tags to form input  @done(22-06-05 11:58)
+      ✔ add tags to store  @done(22-06-05 11:58)
+      ☐ add tags to homepage 
+      ☐ make tags clickable (direct to tag search) 
+        ☐ display currently selected tag 
+    ☐ search support 
+      ✔ search bar  @done(22-06-05 11:59)
+      ☐ able to search by title, description, url, plain tag name 
+      ☐ search by tag (#bla) 
+    ☐ store to db 
+  
+  
+Bonus:
+    ☐ RSS export
+    ☐ ActivityPub interface
