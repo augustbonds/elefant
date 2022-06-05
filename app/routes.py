@@ -1,4 +1,6 @@
 from flask import render_template, jsonify, request, redirect
+from flask_basicauth import BasicAuth
+
 from app import app
 from app.store.file_store import FileStore
 from app.forms import NewBookmarkForm
@@ -7,6 +9,8 @@ import logging
 store = FileStore()
 user = {'username': 'boonspoj'}
 logger = logging.getLogger(__name__)
+
+basic_auth = BasicAuth(app)
 
 
 @app.route('/')
@@ -38,6 +42,7 @@ def index():
 
 
 @app.route('/bookmarks/new', methods=['GET', 'POST'])
+@basic_auth.required
 def create_new_bookmark():
     if request.method == 'POST':
         post = post_from_form(request.form)
@@ -59,6 +64,7 @@ def get_bookmarks():
 
 
 @app.route('/bookmarks', methods=['POST'])
+@basic_auth.required
 def add_bookmark():
     post = post_from_form(request.form)
     store.add_post(post)
