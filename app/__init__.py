@@ -4,7 +4,7 @@ import logging
 
 logging.basicConfig(filename='elefant.log', level=logging.DEBUG)
 
-config = configparser.ConfigParser()
+config = configparser.RawConfigParser()
 config.read("conf/app.conf")
 
 app = Flask(__name__,
