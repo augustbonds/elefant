@@ -8,6 +8,15 @@
       <button type="submit">Search</button>
     </form>
   </div>
+  {% if tags %}
+  <div class="active-filters">
+    <span>Filtered by tags: </span>
+    {% for tag in tags.split(',') %}
+    <span class="active-tag">{{tag}}</span>
+    {% endfor %}
+    <a href="/" class="clear-filters">Clear filters</a>
+  </div>
+  {% endif %}
   {% for bookmark in bookmarks %}
   <div class="bookmark">
     <div class="bookmark-header">
@@ -16,6 +25,13 @@
     <div class="bookmark-description">
       <p>{{bookmark.description}}</p>
     </div>
+    {% if bookmark.tags %}
+    <div class="bookmark-tags">
+      {% for tag in bookmark.tags %}
+      <a href="/?tags={{tag}}" class="tag-badge">{{tag}}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="bookmark-timestamp">
       <p>{{bookmark.date_added}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a></p>
     </div>
