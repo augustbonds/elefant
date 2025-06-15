@@ -26,3 +26,7 @@ class AbstractStore(ABC):
     @abstractmethod
     def update_post(self, post_id, updated_post):
         pass
+
+    @abstractmethod
+    def archive_post(self, post_id):
+        pass

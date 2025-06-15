@@ -43,37 +43,36 @@ class FileStore(AbstractStore):
         self.db_path = read_db_path_from_conf()
         logger.info(f"Loaded bookmark store with path {self.db_path}")
 
-    def get_posts(self, offset=0, limit=10):
+    def get_posts(self, offset=0, limit=20):
         logger.debug(f"get_posts: o={offset} l={limit} ")
         db = read_store_from_file(self.db_path)
-        posts = db["bookmarks"]
+        posts = [post for post in db["bookmarks"] if not post.get("archived", False)]
         sorted_by_time = posts_sorted_by_time(posts)
-        return sorted_by_time[offset * limit:offset * limit + limit]
+        return sorted_by_time[offset:offset + limit]
 
-    def get_posts_by_tags(self, tags=[], offset=0, limit=10):
+    def get_posts_by_tags(self, tags=[], offset=0, limit=20):
         logger.debug(f"get_posts_by_tags: tags={tags} o={offset} l={limit} ")
         db = read_store_from_file(self.db_path)
-        posts = db["bookmarks"]
+        posts = [post for post in db["bookmarks"] if not post.get("archived", False)]
         by_tags = [post for post in posts if set(post.get("tags", [])).intersection(set(tags))]
         sorted_by_time = posts_sorted_by_time(by_tags)
-        return sorted_by_time[offset * limit:offset * limit + limit]
+        return sorted_by_time[offset:offset + limit]
 
     def add_post(self, post):
         store = read_store_from_file(self.db_path)
         post["id"] = next_id(store)
         post["date_added"] = str(datetime.datetime.utcnow().isoformat())
+        post["archived"] = False
         store["bookmarks"].append(post)
         self.write_db_file(store)
         logger.debug(f"add_post: {post}")
 
     def search_posts(self, query, offset, limit):
         query = query.lower()
-        posts = self.get_all_posts()
-        last_index = offset * limit + limit
+        all_posts = self.get_all_posts()
+        posts = [post for post in all_posts if not post.get("archived", False)]
         result = []
         for post in posts:
-            if len(result) == last_index - 1:
-                break
             if query in post["title"].lower():
                 result.append(post)
             elif query in post["url"].lower():
@@ -82,7 +81,8 @@ class FileStore(AbstractStore):
                 result.append(post)
             elif query in post.get("description", "").lower():
                 result.append(post)
-        return posts_sorted_by_time(result)[offset * limit:]
+        sorted_results = posts_sorted_by_time(result)
+        return sorted_results[offset:offset + limit]
 
     def get_all_posts(self):
         return read_store_from_file(self.db_path)["bookmarks"]
@@ -103,9 +103,23 @@ class FileStore(AbstractStore):
                 updated_post["id"] = post_id
                 updated_post["date_added"] = post["date_added"]
                 updated_post["date_updated"] = str(datetime.datetime.utcnow().isoformat())
+                updated_post["archived"] = post.get("archived", False)
                 posts[i] = updated_post
                 self.write_db_file(store)
                 logger.debug(f"update_post: {updated_post}")
+                return True
+        return False
+
+    def archive_post(self, post_id):
+        store = read_store_from_file(self.db_path)
+        posts = store["bookmarks"]
+        for i, post in enumerate(posts):
+            if post["id"] == post_id and not post.get("archived", False):
+                post["archived"] = True
+                post["date_archived"] = str(datetime.datetime.utcnow().isoformat())
+                posts[i] = post
+                self.write_db_file(store)
+                logger.debug(f"archive_post: {post}")
                 return True
         return False
 

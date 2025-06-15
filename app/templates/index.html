@@ -28,17 +28,19 @@
     {% if bookmark.tags %}
     <div class="bookmark-tags">
       {% for tag in bookmark.tags %}
+      {% if tag.strip() %}
       <a href="/?tags={{tag}}" class="tag-badge">{{tag}}</a>
+      {% endif %}
       {% endfor %}
     </div>
     {% endif %}
     <div class="bookmark-timestamp">
-      <p>{{bookmark.date_added}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a></p>
+      <p>{{bookmark.date_added}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a><a href="/bookmarks/{{bookmark.id}}/archive" class="archive-link" onclick="return confirm('Archive this bookmark?') && fetch(this.href, {method: 'POST'}).then(() => location.reload())">ARCHIVE</a></p>
     </div>
   </div>
   {% endfor %}
 <div class="bookmark-pagination">
-  <a href="/?offset={{prev_offset}}&limit={{limit}}&tags={{tags}}">prev</a>Page {{page_num}}<a href="/?offset={{next_offset}}&limit={{limit}}&tags={{tags}}">next</a>
+  <a href="/?offset={{prev_offset}}&limit={{limit}}&tags={{tags}}&q={{search_query}}">prev</a>Page {{page_num}}<a href="/?offset={{next_offset}}&limit={{limit}}&tags={{tags}}&q={{search_query}}">next</a>
 </div>
 </div>
 {% endblock %}

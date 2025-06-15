@@ -34,25 +34,36 @@ a.edit-link:hover {
   color: #333;
 }
 
+a.archive-link {
+  font-size: x-small;
+  color: #cc6600;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+a.archive-link:hover {
+  color: #994400;
+}
+
 div.bookmark-tags {
   margin: 0.5em 0;
 }
 
 a.tag-badge {
   display: inline-block;
-  background-color: #e6f3ff;
-  color: #0066cc;
-  padding: 2px 8px;
-  margin: 2px 4px 2px 0;
-  border-radius: 12px;
-  font-size: 0.8em;
+  background-color: #f5f5f5;
+  color: #666;
+  padding: 1px 6px;
+  margin: 2px 3px 2px 0;
+  border-radius: 8px;
+  font-size: 0.7em;
   text-decoration: none;
-  border: 1px solid #b3d9ff;
+  border: 1px solid #ddd;
 }
 
 a.tag-badge:hover {
-  background-color: #cce6ff;
-  color: #004499;
+  background-color: #eee;
+  color: #444;
 }
 
 div.active-filters {
