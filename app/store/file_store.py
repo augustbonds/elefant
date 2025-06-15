@@ -48,7 +48,7 @@ class FileStore(AbstractStore):
         db = read_store_from_file(self.db_path)
         posts = [post for post in db["bookmarks"] if not post.get("archived", False)]
         sorted_by_time = posts_sorted_by_time(posts)
-        return sorted_by_time[offset:offset + limit]
+        return sorted_by_time[offset:offset + limit], len(posts)
 
     def get_posts_by_tags(self, tags=[], offset=0, limit=20):
         logger.debug(f"get_posts_by_tags: tags={tags} o={offset} l={limit} ")
@@ -56,7 +56,7 @@ class FileStore(AbstractStore):
         posts = [post for post in db["bookmarks"] if not post.get("archived", False)]
         by_tags = [post for post in posts if set(post.get("tags", [])).intersection(set(tags))]
         sorted_by_time = posts_sorted_by_time(by_tags)
-        return sorted_by_time[offset:offset + limit]
+        return sorted_by_time[offset:offset + limit], len(by_tags)
 
     def add_post(self, post):
         store = read_store_from_file(self.db_path)
@@ -122,6 +122,37 @@ class FileStore(AbstractStore):
                 logger.debug(f"archive_post: {post}")
                 return True
         return False
+
+    def unified_search(self, tags, text_query, offset, limit):
+        """Unified search that handles both tag filtering and text search"""
+        all_posts = self.get_all_posts()
+        posts = [post for post in all_posts if not post.get("archived", False)]
+        result = []
+        
+        for post in posts:
+            # Check tag matching
+            tag_match = True
+            if tags:
+                post_tags = [tag.lower() for tag in post.get("tags", [])]
+                tag_match = all(tag in post_tags for tag in tags)
+            
+            # Check text matching
+            text_match = True
+            if text_query:
+                text_query_lower = text_query.lower()
+                text_match = (
+                    text_query_lower in post["title"].lower() or
+                    text_query_lower in post["url"].lower() or
+                    text_query_lower in post.get("description", "").lower() or
+                    text_query_lower in ''.join(post.get("tags", [])).lower()
+                )
+            
+            # Both conditions must match
+            if tag_match and text_match:
+                result.append(post)
+        
+        sorted_results = posts_sorted_by_time(result)
+        return sorted_results[offset:offset + limit], len(result)
 
     def write_db_file(self, store):
         with open(self.db_path, 'w') as db:

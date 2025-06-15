@@ -4,19 +4,10 @@
 <div class="container">
   <div class="search-container">
     <form>
-      <input type="search" placeholder="Search.." name="q" value="{{search_query}}"></input>
+      <input type="search" placeholder="Search text or #tags.." name="q" value="{{search_query}}"></input>
       <button type="submit">Search</button>
     </form>
   </div>
-  {% if tags %}
-  <div class="active-filters">
-    <span>Filtered by tags: </span>
-    {% for tag in tags.split(',') %}
-    <span class="active-tag">{{tag}}</span>
-    {% endfor %}
-    <a href="/" class="clear-filters">Clear filters</a>
-  </div>
-  {% endif %}
   {% for bookmark in bookmarks %}
   <div class="bookmark">
     <div class="bookmark-header">
@@ -29,7 +20,7 @@
     <div class="bookmark-tags">
       {% for tag in bookmark.tags %}
       {% if tag.strip() %}
-      <a href="/?tags={{tag}}" class="tag-badge">{{tag}}</a>
+      <a href="/?q=%23{{tag}}" class="tag-badge">{{tag}}</a>
       {% endif %}
       {% endfor %}
     </div>
@@ -40,7 +31,19 @@
   </div>
   {% endfor %}
 <div class="bookmark-pagination">
-  <a href="/?offset={{prev_offset}}&limit={{limit}}&tags={{tags}}&q={{search_query}}">prev</a>Page {{page_num}}<a href="/?offset={{next_offset}}&limit={{limit}}&tags={{tags}}&q={{search_query}}">next</a>
+  {% if has_prev %}
+  <a href="/?offset={{prev_offset}}&limit={{limit}}&q={{search_query|urlencode}}">prev</a>
+  {% else %}
+  <span class="disabled">prev</span>
+  {% endif %}
+  
+  <span class="page-info">Page {{page_num}} of {{total_pages}} ({{total}} total)</span>
+  
+  {% if has_next %}
+  <a href="/?offset={{next_offset}}&limit={{limit}}&q={{search_query|urlencode}}">next</a>
+  {% else %}
+  <span class="disabled">next</span>
+  {% endif %}
 </div>
 </div>
 {% endblock %}

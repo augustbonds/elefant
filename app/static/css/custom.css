@@ -89,6 +89,32 @@ a.clear-filters {
   font-size: 0.8em;
 }
 
+div.bookmark-pagination {
+  margin: 2em 0;
+  text-align: center;
+}
+
+div.bookmark-pagination a {
+  margin: 0 1em;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+div.bookmark-pagination a:hover {
+  text-decoration: underline;
+}
+
+div.bookmark-pagination span.disabled {
+  margin: 0 1em;
+  color: #ccc;
+}
+
+div.bookmark-pagination span.page-info {
+  margin: 0 1em;
+  font-size: 0.9em;
+  color: #666;
+}
+
 @media (min-width: 750px) {
   div.bookmark {
     margin-bottom: 1em;

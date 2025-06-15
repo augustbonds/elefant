@@ -30,3 +30,7 @@ class AbstractStore(ABC):
     @abstractmethod
     def archive_post(self, post_id):
         pass
+
+    @abstractmethod
+    def unified_search(self, tags, text_query, offset, limit):
+        pass
