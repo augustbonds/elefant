@@ -3,7 +3,7 @@ from flask_basicauth import BasicAuth
 
 from app import app
 from app.store.file_store import FileStore
-from app.forms import NewBookmarkForm
+from app.forms import NewBookmarkForm, EditBookmarkForm
 import logging
 
 store = FileStore()
@@ -69,6 +69,28 @@ def add_bookmark():
     post = post_from_form(request.form)
     store.add_post(post)
     return redirect('/')
+
+
+@app.route('/bookmarks/<int:post_id>/edit', methods=['GET', 'POST'])
+@basic_auth.required
+def edit_bookmark(post_id):
+    if request.method == 'POST':
+        updated_post = post_from_form(request.form)
+        if store.update_post(post_id, updated_post):
+            return redirect('/')
+        else:
+            return "Bookmark not found", 404
+    else:
+        bookmark = store.get_post_by_id(post_id)
+        if bookmark:
+            form = EditBookmarkForm()
+            form.url.data = bookmark['url']
+            form.title.data = bookmark['title']
+            form.description.data = bookmark.get('description', '')
+            form.tags.data = ','.join(bookmark.get('tags', []))
+            return render_template('edit.html', form=form, user=user, bookmark=bookmark)
+        else:
+            return "Bookmark not found", 404
 
 
 def post_from_form(form):

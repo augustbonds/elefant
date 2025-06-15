@@ -1,0 +1,27 @@
+{% extends "base.html" %}    
+
+{% block content %}
+<div class="container">
+<h2>Edit Bookmark</h2>
+<form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=32) }}
+        </p>
+        <p>
+            {{ form.url.label }}<br>
+            {{ form.url(size=32) }}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(size=32) }}
+        </p>
+        <p>
+            {{ form.tags.label }}<br>
+            {{ form.tags(size=32) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</div>
+    {% endblock %}

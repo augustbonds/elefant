@@ -87,6 +87,28 @@ class FileStore(AbstractStore):
     def get_all_posts(self):
         return read_store_from_file(self.db_path)["bookmarks"]
 
+    def get_post_by_id(self, post_id):
+        db = read_store_from_file(self.db_path)
+        posts = db["bookmarks"]
+        for post in posts:
+            if post["id"] == post_id:
+                return post
+        return None
+
+    def update_post(self, post_id, updated_post):
+        store = read_store_from_file(self.db_path)
+        posts = store["bookmarks"]
+        for i, post in enumerate(posts):
+            if post["id"] == post_id:
+                updated_post["id"] = post_id
+                updated_post["date_added"] = post["date_added"]
+                updated_post["date_updated"] = str(datetime.datetime.utcnow().isoformat())
+                posts[i] = updated_post
+                self.write_db_file(store)
+                logger.debug(f"update_post: {updated_post}")
+                return True
+        return False
+
     def write_db_file(self, store):
         with open(self.db_path, 'w') as db:
             json.dump(store, db, indent=4)
