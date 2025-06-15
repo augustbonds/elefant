@@ -9,3 +9,11 @@ class NewBookmarkForm(FlaskForm):
     description = TextAreaField('Description')
     tags = StringField('Tags')
     submit = SubmitField('Create')
+
+
+class EditBookmarkForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    url = StringField('Url', validators=[DataRequired()])
+    description = TextAreaField('Description')
+    tags = StringField('Tags')
+    submit = SubmitField('Update')
