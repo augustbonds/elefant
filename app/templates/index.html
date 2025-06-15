@@ -17,7 +17,7 @@
       <p>{{bookmark.description}}</p>
     </div>
     <div class="bookmark-timestamp">
-      <p>{{bookmark.date_added}}</p>
+      <p>{{bookmark.date_added}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a></p>
     </div>
   </div>
   {% endfor %}

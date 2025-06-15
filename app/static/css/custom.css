@@ -23,6 +23,17 @@ div.bookmark div.bookmark-timestamp {
   color: gray;
 }
 
+a.edit-link {
+  font-size: x-small;
+  color: gray;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+a.edit-link:hover {
+  color: #333;
+}
+
 @media (min-width: 750px) {
   div.bookmark {
     margin-bottom: 1em;
