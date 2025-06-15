@@ -3,3 +3,10 @@
 # The store section contains configuration regarding the physical storage of bookmarks
 [store]
 DbPath = /path/to/my/db/file #Bookmarks are stored at the path specified
+
+[cryptography]
+SecretKey = averysecretrandomstring
+
+[auth]
+User = developer
+Password = developer
