@@ -5,9 +5,9 @@
       {% if title %}
       <title>{{ user.username }}'s - Bookmarks</title>
       {% endif %}
-      <link rel="stylesheet" href="/css/normalize.css">
-      <link rel="stylesheet" href="/css/skeleton.css">
-      <link rel="stylesheet" href="/css/custom.css">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     </head>
     <body>
       <div class="container page-header">
