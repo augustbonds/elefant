@@ -35,7 +35,7 @@
     </div>
     {% endif %}
     <div class="bookmark-timestamp">
-      <p>{{bookmark.date_added}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a><a href="/bookmarks/{{bookmark.id}}/archive" class="archive-link" onclick="return confirm('Archive this bookmark?') && fetch(this.href, {method: 'POST'}).then(() => location.reload())">ARCHIVE</a></p>
+      <p>{{bookmark.date_added | timeago}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a><a href="/bookmarks/{{bookmark.id}}/archive" class="archive-link" onclick="return confirm('Archive this bookmark?') && fetch(this.href, {method: 'POST'}).then(() => location.reload())">ARCHIVE</a></p>
     </div>
   </div>
   {% endfor %}
