@@ -47,23 +47,19 @@ a.archive-link:hover {
 
 div.bookmark-tags {
   margin: 0.5em 0;
+  font-size: 0.75em;
+  color: #999;
 }
 
-a.tag-badge {
-  display: inline-block;
-  background-color: #f5f5f5;
-  color: #666;
-  padding: 1px 6px;
-  margin: 2px 3px 2px 0;
-  border-radius: 8px;
-  font-size: 0.7em;
+a.tag-link {
+  color: #999;
   text-decoration: none;
-  border: 1px solid #ddd;
+  font-size: inherit;
 }
 
-a.tag-badge:hover {
-  background-color: #eee;
-  color: #444;
+a.tag-link:hover {
+  color: #666;
+  text-decoration: underline;
 }
 
 div.active-filters {
