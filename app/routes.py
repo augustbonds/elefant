@@ -4,13 +4,52 @@ from flask_basicauth import BasicAuth
 from app import app
 from app.store.file_store import FileStore
 from app.forms import NewBookmarkForm, EditBookmarkForm
+from app.config import config
 import logging
 
 store = FileStore()
-user = {'username': 'boonspoj'}
+user = config.DEFAULT_USER
 logger = logging.getLogger(__name__)
 
 basic_auth = BasicAuth(app)
+
+
+def handle_bookmark_form(form, post_id=None):
+    """
+    Common handler for bookmark form processing (create/edit)
+    
+    Args:
+        form: The validated form instance
+        post_id: Optional post ID for editing (None for creating)
+        
+    Returns:
+        redirect response if successful, None if form should be re-rendered
+    """
+    if form.validate_on_submit():
+        post = post_from_form(request.form)
+        
+        if post_id:
+            # Edit existing bookmark
+            if store.update_post(post_id, post):
+                return redirect('/')
+            else:
+                logger.error(f"Failed to update bookmark {post_id}")
+                return "Error updating bookmark", 500
+        else:
+            # Create new bookmark
+            store.add_post(post)
+            return redirect('/')
+    
+    # Form validation failed, return None to re-render
+    return None
+
+
+def populate_edit_form(form, bookmark):
+    """Populate edit form with existing bookmark data"""
+    form.url.data = bookmark['url']
+    form.title.data = bookmark['title']
+    form.description.data = bookmark.get('description', '')
+    form.tags.data = ','.join(bookmark.get('tags', []))
 
 
 def parse_search_query(query):
@@ -45,7 +84,7 @@ def index():
         search_query = ' '.join(f'#{tag}' for tag in tag_list)
     
     offset = request.args.get('offset', default=0, type=int)
-    limit = request.args.get('limit', default=20, type=int)
+    limit = request.args.get('limit', default=config.DEFAULT_PAGE_SIZE, type=int)
     prev_offset = max(0, offset - limit)
     next_offset = offset + limit
     
@@ -77,11 +116,14 @@ def index():
 @basic_auth.required
 def create_new_bookmark():
     form = NewBookmarkForm()
-    if form.validate_on_submit():
-        post = post_from_form(request.form)
-        store.add_post(post)
-        return redirect('/')
-    return render_template('createnew.html', form=form, user=user)
+    
+    # Try to handle form submission
+    result = handle_bookmark_form(form)
+    if result:
+        return result
+    
+    # Form not submitted or validation failed, render template
+    return render_template('createnew.html', form=form, user=user, config=config)
 
 
 @app.route('/bookmarks', methods=['GET'])
@@ -110,21 +152,17 @@ def edit_bookmark(post_id):
         return "Bookmark not found", 404
     
     form = EditBookmarkForm()
-    if form.validate_on_submit():
-        updated_post = post_from_form(request.form)
-        if store.update_post(post_id, updated_post):
-            return redirect('/')
-        else:
-            return "Error updating bookmark", 500
     
-    # Pre-populate form with existing data
+    # Try to handle form submission
+    result = handle_bookmark_form(form, post_id)
+    if result:
+        return result
+    
+    # Pre-populate form with existing data on GET request
     if request.method == 'GET':
-        form.url.data = bookmark['url']
-        form.title.data = bookmark['title']
-        form.description.data = bookmark.get('description', '')
-        form.tags.data = ','.join(bookmark.get('tags', []))
+        populate_edit_form(form, bookmark)
     
-    return render_template('edit.html', form=form, user=user, bookmark=bookmark)
+    return render_template('edit.html', form=form, user=user, bookmark=bookmark, config=config)
 
 
 @app.route('/bookmarks/<int:post_id>/archive', methods=['POST'])

@@ -36,12 +36,12 @@ class TagInput {
         this.tagInputField.addEventListener('input', (e) => {
             const currentValue = e.target.value.trim();
             
-            if (currentValue.length >= 1) {
+            if (currentValue.length >= window.AppConfig.minAutocompleteChars) {
                 // Filter matching tags
                 const matches = this.allTags.filter(tag => 
                     tag.toLowerCase().includes(currentValue.toLowerCase()) &&
                     !this.currentTags.includes(tag)
-                ).slice(0, 5); // Show max 5 suggestions
+                ).slice(0, window.AppConfig.maxAutocompleteSuggestions);
                 
                 this.showSuggestions(matches);
             } else {

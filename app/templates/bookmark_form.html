@@ -55,6 +55,15 @@
     </form>
 </div>
 
+<script>
+// Configuration passed from backend
+window.AppConfig = {
+    maxAutocompleteSuggestions: {{ config.MAX_AUTOCOMPLETE_SUGGESTIONS }},
+    minAutocompleteChars: {{ config.MIN_AUTOCOMPLETE_CHARS }},
+    maxTitleLength: {{ config.MAX_TITLE_LENGTH }},
+    maxDescriptionLength: {{ config.MAX_DESCRIPTION_LENGTH }}
+};
+</script>
 <script src="{{ url_for('static', filename='js/tag-input.js') }}"></script>
 <script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
 <script>

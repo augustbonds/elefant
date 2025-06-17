@@ -38,8 +38,8 @@ class FormValidator {
         if (!title) {
             this.showClientError('title', 'Title is required');
             isValid = false;
-        } else if (title.length > 200) {
-            this.showClientError('title', 'Title must be less than 200 characters');
+        } else if (title.length > window.AppConfig.maxTitleLength) {
+            this.showClientError('title', `Title must be less than ${window.AppConfig.maxTitleLength} characters`);
             isValid = false;
         }
         
@@ -60,8 +60,8 @@ class FormValidator {
         if (!description) {
             this.showClientError('description', 'Description is required');
             isValid = false;
-        } else if (description.length > 1000) {
-            this.showClientError('description', 'Description must be less than 1000 characters');
+        } else if (description.length > window.AppConfig.maxDescriptionLength) {
+            this.showClientError('description', `Description must be less than ${window.AppConfig.maxDescriptionLength} characters`);
             isValid = false;
         }
         
