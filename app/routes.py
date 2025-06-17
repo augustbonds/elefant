@@ -134,6 +134,23 @@ def archive_bookmark(post_id):
         return "Bookmark not found", 404
 
 
+@app.route('/api/tags')
+def get_tags():
+    """Return all unique tags as JSON for autocomplete"""
+    all_posts = store.get_all_posts()
+    active_posts = [post for post in all_posts if not post.get("archived", False)]
+    
+    # Collect all tags from all posts
+    all_tags = set()
+    for post in active_posts:
+        for tag in post.get("tags", []):
+            if tag.strip():
+                all_tags.add(tag.strip())
+    
+    # Return sorted list of tags
+    return jsonify(sorted(list(all_tags)))
+
+
 def post_from_form(form):
     post = {"url": request.form['url'],
             "title": request.form['title'],
