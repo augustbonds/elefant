@@ -6,15 +6,36 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.title.label }}<br>
-            {{ form.title(size=32) }}
+            {{ form.title(size=32, id="title") }}
+            {% if form.title.errors %}
+            <div class="field-errors">
+                {% for error in form.title.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </p>
         <p>
             {{ form.url.label }}<br>
-            {{ form.url(size=32) }}
+            {{ form.url(size=32, id="url") }}
+            {% if form.url.errors %}
+            <div class="field-errors">
+                {% for error in form.url.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </p>
         <p>
             {{ form.description.label }}<br>
-            {{ form.description(size=32) }}
+            {{ form.description(size=32, id="description") }}
+            {% if form.description.errors %}
+            <div class="field-errors">
+                {% for error in form.description.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
         </p>
         <p>
             {{ form.tags.label }}<br>
@@ -118,6 +139,74 @@ document.addEventListener('DOMContentLoaded', function() {
             hideSuggestions();
         }
     });
+});
+
+// Form validation
+function validateForm() {
+    const title = document.getElementById('title').value.trim();
+    const url = document.getElementById('url').value.trim();
+    const description = document.getElementById('description').value.trim();
+    
+    // Clear previous errors
+    document.querySelectorAll('.client-error').forEach(error => error.remove());
+    
+    let isValid = true;
+    
+    // Validate title
+    if (!title) {
+        showClientError('title', 'Title is required');
+        isValid = false;
+    } else if (title.length > 200) {
+        showClientError('title', 'Title must be less than 200 characters');
+        isValid = false;
+    }
+    
+    // Validate URL
+    if (!url) {
+        showClientError('url', 'URL is required');
+        isValid = false;
+    } else {
+        try {
+            new URL(url);
+        } catch {
+            showClientError('url', 'Please enter a valid URL');
+            isValid = false;
+        }
+    }
+    
+    // Validate description
+    if (!description) {
+        showClientError('description', 'Description is required');
+        isValid = false;
+    } else if (description.length > 1000) {
+        showClientError('description', 'Description must be less than 1000 characters');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function showClientError(fieldName, message) {
+    const field = document.getElementById(fieldName);
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-errors';
+    errorDiv.innerHTML = `<span class="error client-error">${message}</span>`;
+    field.parentNode.appendChild(errorDiv);
+}
+
+// Add form validation on submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    if (!validateForm()) {
+        e.preventDefault();
+    }
+});
+
+// Add real-time validation
+['title', 'url', 'description'].forEach(fieldName => {
+    const field = document.getElementById(fieldName);
+    if (field) {
+        field.addEventListener('blur', validateForm);
+    }
 });
 </script>
 

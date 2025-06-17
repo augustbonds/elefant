@@ -76,13 +76,12 @@ def index():
 @app.route('/bookmarks/new', methods=['GET', 'POST'])
 @basic_auth.required
 def create_new_bookmark():
-    if request.method == 'POST':
+    form = NewBookmarkForm()
+    if form.validate_on_submit():
         post = post_from_form(request.form)
         store.add_post(post)
         return redirect('/')
-    else:
-        form = NewBookmarkForm()
-        return render_template('createnew.html', form=form, user=user)
+    return render_template('createnew.html', form=form, user=user)
 
 
 @app.route('/bookmarks', methods=['GET'])
@@ -106,23 +105,26 @@ def add_bookmark():
 @app.route('/bookmarks/<int:post_id>/edit', methods=['GET', 'POST'])
 @basic_auth.required
 def edit_bookmark(post_id):
-    if request.method == 'POST':
+    bookmark = store.get_post_by_id(post_id)
+    if not bookmark:
+        return "Bookmark not found", 404
+    
+    form = EditBookmarkForm()
+    if form.validate_on_submit():
         updated_post = post_from_form(request.form)
         if store.update_post(post_id, updated_post):
             return redirect('/')
         else:
-            return "Bookmark not found", 404
-    else:
-        bookmark = store.get_post_by_id(post_id)
-        if bookmark:
-            form = EditBookmarkForm()
-            form.url.data = bookmark['url']
-            form.title.data = bookmark['title']
-            form.description.data = bookmark.get('description', '')
-            form.tags.data = ','.join(bookmark.get('tags', []))
-            return render_template('edit.html', form=form, user=user, bookmark=bookmark)
-        else:
-            return "Bookmark not found", 404
+            return "Error updating bookmark", 500
+    
+    # Pre-populate form with existing data
+    if request.method == 'GET':
+        form.url.data = bookmark['url']
+        form.title.data = bookmark['title']
+        form.description.data = bookmark.get('description', '')
+        form.tags.data = ','.join(bookmark.get('tags', []))
+    
+    return render_template('edit.html', form=form, user=user, bookmark=bookmark)
 
 
 @app.route('/bookmarks/<int:post_id>/archive', methods=['POST'])
