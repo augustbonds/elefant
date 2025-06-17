@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    {% if mode == 'edit' %}
+        <h2>Edit Bookmark</h2>
+    {% endif %}
+    
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=32, id="title") }}
+            {% if form.title.errors %}
+            <div class="field-errors">
+                {% for error in form.title.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.url.label }}<br>
+            {{ form.url(size=32, id="url") }}
+            {% if form.url.errors %}
+            <div class="field-errors">
+                {% for error in form.url.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(size=32, id="description") }}
+            {% if form.description.errors %}
+            <div class="field-errors">
+                {% for error in form.description.errors %}
+                <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.tags.label }}<br>
+            <div class="tag-input-container">
+                {{ form.tags(style="display: none;", id="tags-input") }}
+                <div class="tag-pills-container" id="tag-pills-container">
+                    <input type="text" class="tag-input-field" id="tag-input-field" placeholder="Add tags...">
+                </div>
+                <div id="tag-suggestions" class="tag-suggestions"></div>
+            </div>
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/tag-input.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tag input
+    new TagInput('tags-input', '.tag-input-container');
+    
+    // Initialize form validation
+    new FormValidator();
+});
+</script>
+
+{% endblock %}

@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, URL, Length
 
 
-class NewBookmarkForm(FlaskForm):
+class BookmarkForm(FlaskForm):
     title = StringField('Title', validators=[
         DataRequired(message="Title is required"),
         Length(min=1, max=200, message="Title must be between 1 and 200 characters")
@@ -17,21 +17,20 @@ class NewBookmarkForm(FlaskForm):
         Length(min=1, max=1000, message="Description must be between 1 and 1000 characters")
     ])
     tags = StringField('Tags')
-    submit = SubmitField('Create')
+    submit = SubmitField('Submit')  # Default text, can be overridden
+
+    def __init__(self, submit_text=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if submit_text:
+            self.submit.label.text = submit_text
 
 
-class EditBookmarkForm(FlaskForm):
-    title = StringField('Title', validators=[
-        DataRequired(message="Title is required"),
-        Length(min=1, max=200, message="Title must be between 1 and 200 characters")
-    ])
-    url = StringField('URL', validators=[
-        DataRequired(message="URL is required"),
-        URL(message="Please enter a valid URL")
-    ])
-    description = TextAreaField('Description', validators=[
-        DataRequired(message="Description is required"),
-        Length(min=1, max=1000, message="Description must be between 1 and 1000 characters")
-    ])
-    tags = StringField('Tags')
-    submit = SubmitField('Update')
+# Convenience classes for backwards compatibility and semantic clarity
+class NewBookmarkForm(BookmarkForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(submit_text='Create', *args, **kwargs)
+
+
+class EditBookmarkForm(BookmarkForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(submit_text='Update', *args, **kwargs)
