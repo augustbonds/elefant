@@ -113,10 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 addCurrentTag();
             }
-        } else if (e.key === 'Tab' && isDropdownVisible && selectedSuggestionIndex >= 0) {
-            e.preventDefault();
-            const selectedTag = suggestions[selectedSuggestionIndex].dataset.tag;
-            selectTag(selectedTag);
         } else if (e.key === 'Escape' && isDropdownVisible) {
             e.preventDefault();
             hideSuggestions();
