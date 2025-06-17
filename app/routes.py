@@ -158,6 +158,6 @@ def post_from_form(form):
             "title": request.form['title'],
             "description": request.form['description']}
     tags = request.form.get('tags', default='')
-    tags = [tag.strip() for tag in tags.split(',')]
+    tags = [tag.strip() for tag in tags.split(',') if tag.strip()]
     post["tags"] = tags
     return post

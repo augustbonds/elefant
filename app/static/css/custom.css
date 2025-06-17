@@ -111,11 +111,68 @@ div.bookmark-pagination span.page-info {
   color: #666;
 }
 
-/* Tag autocomplete styles */
+/* Tag input with pills styles */
 .tag-input-container {
   position: relative;
-  display: inline-block;
   width: 100%;
+}
+
+.tag-pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 8px;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  background: white;
+  cursor: text;
+}
+
+.tag-pills-container:focus-within {
+  border-color: #33C3F0;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(51, 195, 240, 0.2);
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #666;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.tag-pill-remove {
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tag-pill-remove:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.tag-input-field {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  outline: none;
+  padding: 4px;
+  font-size: 1em;
+  background: transparent;
+}
+
+.tag-input-field::placeholder {
+  color: #999;
 }
 
 .tag-suggestions {
@@ -139,7 +196,8 @@ div.bookmark-pagination span.page-info {
   border-bottom: 1px solid #f0f0f0;
 }
 
-.tag-suggestion:hover {
+.tag-suggestion:hover,
+.tag-suggestion.selected {
   background-color: #f5f5f5;
 }
 

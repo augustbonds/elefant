@@ -40,7 +40,10 @@
         <p>
             {{ form.tags.label }}<br>
             <div class="tag-input-container">
-                {{ form.tags(size=32, id="tags-input") }}
+                {{ form.tags(style="display: none;", id="tags-input") }}
+                <div class="tag-pills-container" id="tag-pills-container">
+                    <input type="text" class="tag-input-field" id="tag-input-field" placeholder="Add tags...">
+                </div>
                 <div id="tag-suggestions" class="tag-suggestions"></div>
             </div>
         </p>
@@ -50,9 +53,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const tagsInput = document.getElementById('tags-input');
+    const hiddenTagsInput = document.getElementById('tags-input');
+    const tagInputField = document.getElementById('tag-input-field');
+    const tagPillsContainer = document.getElementById('tag-pills-container');
     const suggestionsDiv = document.getElementById('tag-suggestions');
     let allTags = [];
+    let currentTags = [];
+    let selectedSuggestionIndex = -1;
     
     // Fetch all available tags
     fetch('/api/tags')
@@ -61,38 +68,133 @@ document.addEventListener('DOMContentLoaded', function() {
             allTags = tags;
         });
     
-    // Handle input events
-    tagsInput.addEventListener('input', function() {
-        const currentValue = this.value;
-        const cursorPos = this.selectionStart;
+    // Initialize with existing tags if any
+    const existingTags = hiddenTagsInput.value;
+    if (existingTags) {
+        currentTags = existingTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        renderTags();
+    }
+    
+    // Handle input events for autocomplete
+    tagInputField.addEventListener('input', function() {
+        const currentValue = this.value.trim();
         
-        // Find the current tag being typed
-        const beforeCursor = currentValue.substring(0, cursorPos);
-        const lastCommaIndex = beforeCursor.lastIndexOf(',');
-        const currentTag = beforeCursor.substring(lastCommaIndex + 1).trim();
-        
-        if (currentTag.length >= 1) {
+        if (currentValue.length >= 1) {
             // Filter matching tags
             const matches = allTags.filter(tag => 
-                tag.toLowerCase().includes(currentTag.toLowerCase()) &&
-                !getCurrentTags(currentValue).includes(tag)
+                tag.toLowerCase().includes(currentValue.toLowerCase()) &&
+                !currentTags.includes(tag)
             ).slice(0, 5); // Show max 5 suggestions
             
-            showSuggestions(matches, currentTag);
+            showSuggestions(matches);
         } else {
             hideSuggestions();
         }
     });
     
-    function getCurrentTags(value) {
-        return value.split(',').map(tag => tag.trim()).filter(tag => tag);
+    // Handle key events
+    tagInputField.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsDiv.querySelectorAll('.tag-suggestion');
+        const isDropdownVisible = suggestionsDiv.style.display === 'block';
+        
+        if (e.key === 'ArrowDown' && isDropdownVisible) {
+            e.preventDefault();
+            selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+            updateSelectedSuggestion();
+        } else if (e.key === 'ArrowUp' && isDropdownVisible) {
+            e.preventDefault();
+            selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+            updateSelectedSuggestion();
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (isDropdownVisible && selectedSuggestionIndex >= 0) {
+                const selectedTag = suggestions[selectedSuggestionIndex].dataset.tag;
+                selectTag(selectedTag);
+            } else {
+                addCurrentTag();
+            }
+        } else if (e.key === 'Tab' && isDropdownVisible && selectedSuggestionIndex >= 0) {
+            e.preventDefault();
+            const selectedTag = suggestions[selectedSuggestionIndex].dataset.tag;
+            selectTag(selectedTag);
+        } else if (e.key === 'Escape' && isDropdownVisible) {
+            e.preventDefault();
+            hideSuggestions();
+        } else if (e.key === ',') {
+            e.preventDefault();
+            addCurrentTag();
+        } else if (e.key === 'Backspace' && this.value === '' && currentTags.length > 0) {
+            // Remove last tag if input is empty
+            removeTag(currentTags.length - 1);
+        } else {
+            // Reset selection when typing
+            selectedSuggestionIndex = -1;
+        }
+    });
+    
+    // Focus the input when clicking on the container
+    tagPillsContainer.addEventListener('click', function(e) {
+        if (e.target === this || e.target.classList.contains('tag-input-field')) {
+            tagInputField.focus();
+        }
+    });
+    
+    function addCurrentTag() {
+        const tagValue = tagInputField.value.trim();
+        if (tagValue && !currentTags.includes(tagValue)) {
+            currentTags.push(tagValue);
+            tagInputField.value = '';
+            renderTags();
+            updateHiddenInput();
+            hideSuggestions();
+        }
     }
     
-    function showSuggestions(matches, currentTag) {
+    function removeTag(index) {
+        currentTags.splice(index, 1);
+        renderTags();
+        updateHiddenInput();
+        tagInputField.focus();
+    }
+    
+    function renderTags() {
+        // Clear existing pills (but keep the input field)
+        const pills = tagPillsContainer.querySelectorAll('.tag-pill');
+        pills.forEach(pill => pill.remove());
+        
+        // Add tag pills before the input field
+        currentTags.forEach((tag, index) => {
+            const pill = document.createElement('div');
+            pill.className = 'tag-pill';
+            pill.innerHTML = `${tag}<span class="tag-pill-remove" data-index="${index}">×</span>`;
+            
+            // Add click handler for remove button
+            pill.querySelector('.tag-pill-remove').addEventListener('click', function() {
+                removeTag(parseInt(this.dataset.index));
+            });
+            
+            tagPillsContainer.insertBefore(pill, tagInputField);
+        });
+    }
+    
+    function updateHiddenInput() {
+        hiddenTagsInput.value = currentTags.join(',');
+    }
+    
+    function updateSelectedSuggestion() {
+        const suggestions = suggestionsDiv.querySelectorAll('.tag-suggestion');
+        suggestions.forEach((suggestion, index) => {
+            suggestion.classList.toggle('selected', index === selectedSuggestionIndex);
+        });
+    }
+    
+    function showSuggestions(matches) {
         if (matches.length === 0) {
             hideSuggestions();
             return;
         }
+        
+        selectedSuggestionIndex = -1; // Reset selection
         
         suggestionsDiv.innerHTML = matches.map(tag => 
             `<div class="tag-suggestion" data-tag="${tag}">${tag}</div>`
@@ -113,29 +215,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function selectTag(selectedTag) {
-        const currentValue = tagsInput.value;
-        const cursorPos = tagsInput.selectionStart;
-        const beforeCursor = currentValue.substring(0, cursorPos);
-        const afterCursor = currentValue.substring(cursorPos);
-        
-        const lastCommaIndex = beforeCursor.lastIndexOf(',');
-        const newValue = beforeCursor.substring(0, lastCommaIndex + 1) + 
-                        (lastCommaIndex >= 0 ? ' ' : '') + 
-                        selectedTag + ', ' + afterCursor;
-        
-        tagsInput.value = newValue;
-        tagsInput.focus();
-        
-        // Position cursor after the selected tag
-        const newCursorPos = (lastCommaIndex >= 0 ? lastCommaIndex + 2 : 0) + selectedTag.length + 2;
-        tagsInput.setSelectionRange(newCursorPos, newCursorPos);
-        
-        hideSuggestions();
+        if (!currentTags.includes(selectedTag)) {
+            currentTags.push(selectedTag);
+            tagInputField.value = '';
+            renderTags();
+            updateHiddenInput();
+            hideSuggestions();
+            tagInputField.focus();
+        }
     }
     
     // Hide suggestions when clicking outside
     document.addEventListener('click', function(e) {
-        if (!tagsInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+        if (!tagPillsContainer.contains(e.target) && !suggestionsDiv.contains(e.target)) {
             hideSuggestions();
         }
     });
