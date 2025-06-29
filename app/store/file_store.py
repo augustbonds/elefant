@@ -79,7 +79,7 @@ class FileStore(AbstractStore):
     def add_post(self, post):
         store = read_store_from_file(self.db_path)
         post["id"] = next_id(store)
-        post["date_added"] = str(datetime.datetime.utcnow().isoformat())
+        post["date_added"] = str(datetime.datetime.now(datetime.timezone.utc).isoformat())
         post["archived"] = False
         store["bookmarks"].append(post)
         self.write_db_file(store)
@@ -120,7 +120,7 @@ class FileStore(AbstractStore):
             if post["id"] == post_id:
                 updated_post["id"] = post_id
                 updated_post["date_added"] = post["date_added"]
-                updated_post["date_updated"] = str(datetime.datetime.utcnow().isoformat())
+                updated_post["date_updated"] = str(datetime.datetime.now(datetime.timezone.utc).isoformat())
                 updated_post["archived"] = post.get("archived", False)
                 posts[i] = updated_post
                 self.write_db_file(store)
@@ -134,7 +134,7 @@ class FileStore(AbstractStore):
         for i, post in enumerate(posts):
             if post["id"] == post_id and not post.get("archived", False):
                 post["archived"] = True
-                post["date_archived"] = str(datetime.datetime.utcnow().isoformat())
+                post["date_archived"] = str(datetime.datetime.now(datetime.timezone.utc).isoformat())
                 posts[i] = post
                 self.write_db_file(store)
                 logger.debug(f"archive_post: {post}")
