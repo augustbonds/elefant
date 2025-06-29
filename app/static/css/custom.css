@@ -45,6 +45,17 @@ a.archive-link:hover {
   color: #994400;
 }
 
+a.wayback-link {
+  font-size: x-small;
+  color: #0066cc;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+a.wayback-link:hover {
+  color: #004499;
+}
+
 div.bookmark-tags {
   margin: 0.5em 0;
   font-size: 0.75em;

@@ -26,7 +26,7 @@
     </div>
     {% endif %}
     <div class="bookmark-timestamp">
-      <p>{{bookmark.date_added | timeago}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a><a href="/bookmarks/{{bookmark.id}}/archive" class="archive-link">ARCHIVE</a></p>
+      <p>{{bookmark.date_added | timeago}}<a href="/bookmarks/{{bookmark.id}}/edit" class="edit-link">EDIT</a><a href="https://web.archive.org/web/*/{{bookmark.url}}" class="wayback-link" target="_blank" rel="noopener">WAYBACK</a><a href="/bookmarks/{{bookmark.id}}/archive" class="archive-link">ARCHIVE</a></p>
     </div>
   </div>
   {% endfor %}
