@@ -2,7 +2,7 @@ from flask import render_template, jsonify, request, redirect
 from flask_basicauth import BasicAuth
 
 from app import app
-from app.store.file_store import FileStore
+from app.store.file_store import FileStore, parse_search_query
 from app.forms import NewBookmarkForm, EditBookmarkForm
 from app.config import config
 import logging
@@ -52,25 +52,6 @@ def populate_edit_form(form, bookmark):
     form.tags.data = ','.join(bookmark.get('tags', []))
 
 
-def parse_search_query(query):
-    """Parse unified search query to extract tags and text"""
-    if not query:
-        return [], ""
-    
-    import re
-    
-    # Extract #tags using regex
-    tag_matches = re.findall(r'#(\w+)', query)
-    tags = [tag.lower() for tag in tag_matches]
-    
-    # Remove #tags from query to get remaining text
-    text_query = re.sub(r'#\w+', '', query).strip()
-    # Clean up multiple spaces
-    text_query = ' '.join(text_query.split())
-    
-    return tags, text_query
-
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -88,7 +69,6 @@ def index():
     prev_offset = max(0, offset - limit)
     next_offset = offset + limit
     
-    # Parse unified search query
     tags, text_query = parse_search_query(search_query)
     
     logger.info(f"index(): search_query='{search_query}' tags={tags} text='{text_query}' offset={offset}")
@@ -128,12 +108,18 @@ def create_new_bookmark():
 
 @app.route('/bookmarks', methods=['GET'])
 def get_bookmarks():
-    search_query = request.args["q"]
+    search_query = request.args.get("q", default="", type=str)
+    offset = request.args.get('offset', default=0, type=int)
+    limit = request.args.get('limit', default=config.DEFAULT_PAGE_SIZE, type=int)
+    
+    tags, text_query = parse_search_query(search_query)
+    
     if search_query:
-        return jsonify(
-            store.search_posts(query=search_query, offset=request.args["offset"], limit=request.args["limit"]))
+        bookmarks, _ = store.unified_search(tags, text_query, offset, limit)
     else:
-        return jsonify(store.get_all_posts())
+        bookmarks, _ = store.get_posts(offset, limit)
+        
+    return jsonify(bookmarks)
 
 
 @app.route('/bookmarks', methods=['POST'])

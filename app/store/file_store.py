@@ -4,8 +4,26 @@ import json
 import datetime
 from collections import defaultdict
 import logging
+import re
 
 logger = logging.getLogger(__name__)
+
+
+def parse_search_query(query):
+    """Parse unified search query to extract tags and text"""
+    if not query:
+        return [], ""
+    
+    # Extract #tags using regex
+    tag_matches = re.findall(r'#(\w+)', query)
+    tags = [tag.lower() for tag in tag_matches]
+    
+    # Remove #tags from query to get remaining text
+    text_query = re.sub(r'#\w+', '', query).strip()
+    # Clean up multiple spaces
+    text_query = ' '.join(text_query.split())
+    
+    return tags, text_query
 
 
 def posts_sorted_by_time(posts):
